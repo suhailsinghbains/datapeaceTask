@@ -1,14 +1,78 @@
-import React, { Component } from 'react';
-import './index.css';
-export default class Table extends Component {
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom';
+import './index.css'
+export default class User extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      Display: HTMLElement
+    console.log(this.props.match.params.id);
+    this.Init();
+    this.myFunc();
+  }
+  Display;
+  myFunc() {
+    for (let i = 0; i < this.items.length; i++) {
+      if (this.items[i].id === Number(this.props.match.params.id)) {
+        ReactDOM.render(this.DisplayFunc(this.items[i]), document.getElementById('root'));
+      }
     }
   }
-  items = [{}];
-  componentDidMount() {
+  GoBack(){
+    window.location="/";
+  }
+  DisplayFunc(Values) {
+    return (
+      <div class="Main">
+        <div>
+          <button style={{fontSize: "20px",color:"lightgreen"}} onClick={this.GoBack}>{"<-"}</button>
+        </div>
+        <h2>
+          {Values.first_name + " " + Values.last_name}
+        </h2>
+        <hr style={{ color: "teal", borderWidth: "20px" }} />
+        <div style={{ padding: "10px" }}>
+          <div className="MainContainer">
+            <div class="MaxWidth">Company</div>
+            <div class="MaxWidth1">{Values.company_name}</div>
+          </div>
+          <div className="MainContainer">
+            <div class="MaxWidth">City</div>
+            <div class="MaxWidth1">{Values.city}</div>
+          </div>
+          <div className="MainContainer">
+            <div class="MaxWidth">State</div>
+            <div class="MaxWidth1">{Values.state}</div>
+          </div>
+          <div className="MainContainer">
+            <div class="MaxWidth">ZIP</div>
+            <div class="MaxWidth1">{Values.zip}</div>
+          </div>
+          <div className="MainContainer">
+            <div class="MaxWidth">Email</div>
+            <div class="MaxWidth1">{Values.email}</div>
+          </div>
+          <div className="MainContainer">
+            <div class="MaxWidth">Web</div>
+            <div class="MaxWidth1">{Values.web}</div>
+          </div>
+          <div className="MainContainer">
+            <div class="MaxWidth">Age</div>
+            <div class="MaxWidth1">{Values.age}</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  render() {
+    return (
+      <div>
+        <div id="Display">
+          Loading ..
+            </div>
+      </div>
+
+    );
+  }
+  Init() {
     var result = `[
             {
               "id": 1,
@@ -6011,298 +6075,7 @@ export default class Table extends Component {
               "age": 32
             }
           ]`;
-
     this.items = JSON.parse(result);
-    this.TempItems = JSON.parse(result);
-    this.TableRender();
-    this.PageBarRender(1);
-    // fetch("http://demo9197058.mockable.io/users")
-    //     .then(
-    //         (result) => {
-    //             this.setState({
-    //                 isLoaded: true,
-    //                 items: result.items
-    //             });
-    //             this.TableRender(result.items);
-    //         },
-    //         // Note: it's important to handle errors here
-    //         // instead of a catch() block so that we don't swallow
-    //         // exceptions from actual bugs in components.
-    //         (error) => {
-    //             this.setState({
-    //                 isLoaded: true,
-    //                 error
-    //             });
-    //         }
-    //     )
   }
-  PageBarRender(Val) {
-    this.pageNo = Val;
-    let that = this;
-    let PaginationBox = document.getElementById("PaginationBox");
-    PaginationBox.innerHTML = "";
-    PaginationBox.style = "display: flex;padding-left: 20%;";
-    let PreviousButton = document.createElement("div");
-    let NextButton = document.createElement("div");
-    PreviousButton.setAttribute("class", "myClass");
-    PreviousButton.style = "color:teal";
-    PreviousButton.innerHTML = "<";
-    PreviousButton.addEventListener('click', function (value) {
-      that.PageBarRender(Val - 1 === 0 ? 1 : Val - 1);
-      that.TableRender();
-    })
-
-    NextButton.setAttribute("class", "myClass");
-    NextButton.style = "color:teal";
-    NextButton.innerHTML = ">";
-    NextButton.addEventListener('click', function (value) {
-      that.PageBarRender(Val + 1 == that.Display.length ? Val : Val + 1);
-      that.TableRender();
-    })
-    PaginationBox.appendChild(PreviousButton);
-    let FirstPage = document.createElement("div");
-    FirstPage.setAttribute("class", "myClass");
-    FirstPage.innerHTML = 1;
-    FirstPage.addEventListener('click', function (value) {
-      that.PageBarRender(1);
-      that.TableRender();
-    })
-    let LastPage = document.createElement("div");
-    LastPage.setAttribute("class", "myClass");
-    LastPage.innerHTML = this.Display.length - 1;
-    LastPage.addEventListener('click', function (value) {
-      that.PageBarRender(that.Display.length - 1);
-      that.TableRender();
-    })
-
-    let Dots = document.createElement("div");
-    Dots.setAttribute("class", "myClass");
-    Dots.innerHTML = "...";
-
-    if (Val === 1 || Val === 2 || Val === 3 || Val === 4) {
-      let Max = this.Display.length >= 5 ? 5 : this.Display.length;
-      for (let j = 1; j <= Max; j++) {
-        let item = document.createElement("div");
-        item.setAttribute("class", "myClass");
-        item.addEventListener('click', function (value) {
-          that.PageBarRender(Number(value.target.innerHTML));
-          that.TableRender();
-        })
-        item.innerHTML = j;
-        if (Val == j) {
-          item.style = "color:blue";
-        }
-        PaginationBox.appendChild(item);
-      }
-
-      Max >= 5 ?
-        PaginationBox.appendChild(Dots, LastPage) :
-        console.log();
-    } else if (this.pageNo === this.Display.length - 1) {
-      PaginationBox.appendChild(FirstPage);
-      PaginationBox.appendChild(Dots);
-      for (let i = 5; i > 0; i--) {
-        let item = document.createElement("div");
-        item.setAttribute("class", "myClass");
-        item.addEventListener('click', function (value) {
-          that.PageBarRender(Number(value.target.innerHTML));
-          that.TableRender();
-        })
-        item.innerHTML = Number(this.Display.length) - i
-        if (i == 1) {
-          item.style = "color:blue";
-        }
-        PaginationBox.appendChild(item);
-      }
-    }
-    else {
-      PaginationBox.appendChild(FirstPage);
-
-      for (let i = -2; i <= 2; i++) {
-        let item = document.createElement("div");
-        item.setAttribute("class", "myClass");
-        item.addEventListener('click', function (value) {
-          that.PageBarRender(Number(value.target.innerHTML));
-          that.TableRender();
-        })
-        item.innerHTML = this.pageNo + i;
-        if (i == 0) {
-          item.style = "color:blue";
-        }
-        PaginationBox.appendChild(item);
-      }
-      PaginationBox.appendChild(LastPage);
-
-    }
-    PaginationBox.appendChild(NextButton);
-
-  }
-  ReturnTableDataTag(prop) {
-    let ReturnData = [];
-    for (let i = 0; i < prop.length; i++) {
-      let TableData = document.createElement("tr");
-      this.Properties.forEach((item) => {
-        let Data = document.createElement("td");
-        Data.innerHTML = prop[i][item];
-        TableData.appendChild(Data);
-      });
-      TableData.addEventListener("click", function (value) {
-        console.log(prop[i].id);
-        window.location = "#/user/" + prop[i].id;
-      })
-      ReturnData.push(TableData);
-    }
-    return ReturnData
-  }
-  MinMax = true;
-
-
-  Testing(prop) {
-    console.log(prop);
-  }
-  Min(Col) {
-    let that = this;
-    if (Col === 5 || Col === 8) {
-      this.items.sort(function (a, b) {
-        return a[that.Properties[Col]] - b[that.Properties[Col]]
-      });
-    }
-    else {
-      this.items.sort(function (a, b) {
-        return a[that.Properties[Col]].localeCompare(b[that.Properties[Col]])
-      });
-    }
-    this.TableRender();
-  }
-  Max(Col) {
-    let that = this;
-    if (Col === 5 || Col === 8) {
-      this.items.sort(function (a, b) {
-        return b[that.Properties[Col]] - a[that.Properties[Col]]
-      });
-    }
-    else {
-      this.items.sort(function (a, b) {
-        return b[that.Properties[Col]].localeCompare(a[that.Properties[Col]])
-      });
-    }
-    this.TableRender();
-  }
-  DisplayInit() {
-    this.Display = [];
-    let items = this.items;
-    for (let i = 0; i < this.items.length; i = i + 5) {
-      let Page = [];
-      for (let j = i; j < i + 5; j++) {
-        if (this.DefinedOrNot(items[j])) {
-          Page.push(items[j])
-        }
-        else {
-          //Dont Write return here
-        }
-      }
-      this.Display.push(Page);
-    }
-  }
-  DefinedOrNot(prop) {
-    if (prop === undefined) {
-      return false
-    }
-    else {
-      return true
-    }
-  }
-  Display = []; //For Keeping the Table Relevant
-  Properties = [
-    "first_name",
-    "last_name",
-    "company_name",
-    "city",
-    "state",
-    "zip",
-    "email",
-    "web",
-    "age"
-  ];
-  TableRender() {
-    this.DisplayInit();
-    this.PaginationFunc();
-  }
-  pageNo = 1;
-  PaginationFunc() {
-    this.DisplayInit();
-    var Table = document.getElementById("TableHere");
-    Table.innerHTML = "";
-    let TempTable = document.createElement("tr");
-    this.Properties.forEach((item) => {
-      let Heading = document.createElement("th");
-      Heading.innerHTML = item;
-      let that = this;
-      Heading.addEventListener('click', function (item) {
-        that.MinMax = !that.MinMax;
-        that.MinMax === true ?
-          that.Min(that.Properties.indexOf(this.innerHTML)) :
-          that.Max(that.Properties.indexOf(this.innerHTML));
-      });
-      TempTable.appendChild(Heading);
-    });
-    Table.appendChild(TempTable);
-    this.ReturnTableDataTag(this.Display[this.pageNo - 1]).forEach((item) => {
-      Table.appendChild(item);
-    });
-
-  }
-  TempItems = [{}];
-  search(Search) {
-    if (Search === "" || Search.length < 3) {
-      this.items = this.TempItems;
-      this.TableRender();
-      this.PageBarRender(1);
-    }
-    else {
-      let String = JSON.stringify(this.items);
-      let Words = "";
-      let Index = 0;
-      let i = 0;
-      let found = false;
-      for (Index = String.indexOf(Search, Index); Index > -1; Index = String.indexOf(Search, Index + 1)) {
-        found = true;
-        let Start = String.lastIndexOf("{", Index);
-        let End = String.indexOf("}", Index);
-        if (i == 0) {
-          Words = '[';
-        }
-        else {
-          Words += ',';
-        }
-        Words += String.slice(Start, End + 1);
-        i++;
-      }
-      if (found == true) {
-        Words += ']';
-        this.items = JSON.parse(Words.toString());
-        this.TableRender();
-        this.PageBarRender(1);
-      } else {
-        this.items = this.TempItems;
-        this.TableRender();
-        this.PageBarRender(1);
-      }
-
-    }
-  }
-
-  render() {
-    return (
-      <div>
-        <input onChange={(event) => { this.setState({ Search: event.target.value }); this.search(event.target.value); }} />
-        <table id="TableHere">
-
-        </table>
-        <div id="PaginationBox">
-
-        </div>
-      </div>
-    );
-  }
+  items = [{}];
 }
