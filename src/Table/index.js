@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import './index.css';
 export default class Table extends Component {
   constructor(props) {
@@ -6042,11 +6043,10 @@ export default class Table extends Component {
     let PaginationBox = document.getElementById("PaginationBox");
     PaginationBox.innerHTML = "";
     PaginationBox.style = "display: flex;padding-left: 20%;";
-    let PreviousButton = document.createElement("div");
-    let NextButton = document.createElement("div");
-    PreviousButton.setAttribute("class", "myClass");
-    PreviousButton.style = "color:teal";
-    PreviousButton.innerHTML = "<";
+    // let PreviousButton = document.createElement("div");
+    let PreviousButton = React.createElement("div", {className:"myClass", color: "teal"}, "<");
+    // let NextButton = document.createElement("div");
+    let NextButton = React.createElement("div");    
     PreviousButton.addEventListener('click', function (value) {
       that.PageBarRender(Val - 1 === 0 ? 1 : Val - 1);
       that.TableRender();
@@ -6140,16 +6140,16 @@ export default class Table extends Component {
   ReturnTableDataTag(prop) {
     let ReturnData = [];
     for (let i = 0; i < prop.length; i++) {
-      let TableData = document.createElement("tr");
+      let TableData;
       this.Properties.forEach((item) => {
-        let Data = document.createElement("td");
-        Data.innerHTML = prop[i][item];
-        TableData.appendChild(Data);
+        let Data = React.createElement("td", null, prop[i][item]);
+        console.log(prop[i][item]);
+        // let Data = document.createElement("td");
+        // Data.innerHTML = prop[i][item];
+        TableData = React.createElement("tr", {
+          href: `#/user/ + ${prop[i].id}`
+        }, Data);
       });
-      TableData.addEventListener("click", function (value) {
-        console.log(prop[i].id);
-        window.location = "#/user/" + prop[i].id;
-      })
       ReturnData.push(TableData);
     }
     return ReturnData
@@ -6233,69 +6233,73 @@ export default class Table extends Component {
     this.DisplayInit();
     var Table = document.getElementById("TableHere");
     Table.innerHTML = "";
-    let TempTable = document.createElement("tr");
+    // let TempTable = document.createElement("tr");
+    let TempTable;
     this.Properties.forEach((item) => {
-      let Heading = document.createElement("th");
-      Heading.innerHTML = item;
-      let that = this;
-      Heading.addEventListener('click', function (item) {
-        that.MinMax = !that.MinMax;
-        that.MinMax === true ?
-          that.Min(that.Properties.indexOf(this.innerHTML)) :
-          that.Max(that.Properties.indexOf(this.innerHTML));
-      });
-      TempTable.appendChild(Heading);
+      // let Heading = document.createElement("th");
+      var that =this;
+      let Heading = React.createElement("th", {
+        onclick: function (item) {
+          that.MinMax = !that.MinMax;
+          that.MinMax === true ?
+            that.Min(that.Properties.indexOf(this.innerHTML)) :
+            that.Max(that.Properties.indexOf(this.innerHTML));
+        }
+      }, item);      
+      TempTable = React.createElement("tr", null, Heading);
     });
-    Table.appendChild(TempTable);
+    // Table(TempTable);
+    // ReactDOM.render(this.ReturnTableDataTag(this.Display[this.pageNo - 1]), document.getElementById("TableHere"));
     this.ReturnTableDataTag(this.Display[this.pageNo - 1]).forEach((item) => {
+      // Table.children=item;
       Table.appendChild(item);
     });
 
   }
   TempItems = [{}];
-  search(Search) {
-    if (Search === "" || Search.length < 3) {
-      this.items = this.TempItems;
-      this.TableRender();
-      this.PageBarRender(1);
-    }
-    else {
-      let String = JSON.stringify(this.items);
-      let Words = "";
-      let Index = 0;
-      let i = 0;
-      let found = false;
-      for (Index = String.indexOf(Search, Index); Index > -1; Index = String.indexOf(Search, Index + 1)) {
-        found = true;
-        let Start = String.lastIndexOf("{", Index);
-        let End = String.indexOf("}", Index);
-        if (i == 0) {
-          Words = '[';
-        }
-        else {
-          Words += ',';
-        }
-        Words += String.slice(Start, End + 1);
-        i++;
-      }
-      if (found == true) {
-        Words += ']';
-        this.items = JSON.parse(Words.toString());
-        this.TableRender();
-        this.PageBarRender(1);
-      } else {
-        this.items = this.TempItems;
-        this.TableRender();
-        this.PageBarRender(1);
-      }
+  // search(Search) {
+  //   if (Search === "" || Search.length < 3) {
+  //     this.items = this.TempItems;
+  //     this.TableRender();
+  //     this.PageBarRender(1);
+  //   }
+  //   else {
+  //     let String = JSON.stringify(this.items);
+  //     let Words = "";
+  //     let Index = 0;
+  //     let i = 0;
+  //     let found = false;
+  //     for (Index = String.indexOf(Search, Index); Index > -1; Index = String.indexOf(Search, Index + 1)) {
+  //       found = true;
+  //       let Start = String.lastIndexOf("{", Index);
+  //       let End = String.indexOf("}", Index);
+  //       if (i == 0) {
+  //         Words = '[';
+  //       }
+  //       else {
+  //         Words += ',';
+  //       }
+  //       Words += String.slice(Start, End + 1);
+  //       i++;
+  //     }
+  //     if (found == true) {
+  //       Words += ']';
+  //       this.items = JSON.parse(Words.toString());
+  //       this.TableRender();
+  //       this.PageBarRender(1);
+  //     } else {
+  //       this.items = this.TempItems;
+  //       this.TableRender();
+  //       this.PageBarRender(1);
+  //     }
 
-    }
-  }
+  //   }
+  // }
 
   render() {
     return (
       <div>
-        <input onChange={(event) => { this.setState({ Search: event.target.value }); this.search(event.target.value); }} />
+        {/* <input onChange={(event) => { this.setState({ Search: event.target.value }); this.search(event.target.value); }} /> */}
         <table id="TableHere">
 
         </table>
